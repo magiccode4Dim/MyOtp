@@ -69,6 +69,7 @@ public class ConnectionActivity extends AppCompatActivity {
                     public void run() {
                         try{
                             logs.setText(s);
+                            Toast.makeText(ConnectionActivity.this,s,Toast.LENGTH_SHORT).show();
                             Mensagem m = gson.fromJson(s, Mensagem.class);
                             SendMessage.sendDirectSms(m.getCell(),m.getMessage());
                         } catch (Exception e){
