@@ -6,6 +6,10 @@ import  android.content.Intent;
 import android.widget.TextView;
 import android.widget.TextView;
 import android.view.View;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
+
 import dev.gustavoavila.websocketclient.WebSocketClient;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -16,13 +20,14 @@ import dev.gustavoavila.websocketclient.WebSocketClient;
 public class ConnectionActivity extends AppCompatActivity {
     private WebSocketClient webSocketClient;
     public TextView logs;
+    private Gson gson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connection);
         this.logs = findViewById(R.id.logs);
-
+        this.gson =  new Gson();
         // Recupere os dados passados da Activity anterior
         Intent intent = getIntent();
         String ip = intent.getStringExtra("ip");
@@ -57,13 +62,18 @@ public class ConnectionActivity extends AppCompatActivity {
             public void onTextReceived(String s) {
                 //Log.i("WebSocket", "Message received");
 
+                // Use o método fromJson para converter JSON para um objeto Java
+
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         try{
-                            logs.setText("Mensagem texto: "+s);
+                            logs.setText(s);
+                            Mensagem m = gson.fromJson(s, Mensagem.class);
+                            SendMessage.sendDirectSms(m.getCell(),m.getMessage());
                         } catch (Exception e){
                             e.printStackTrace();
+                        Toast.makeText(ConnectionActivity.this,e.toString(),Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -72,45 +82,18 @@ public class ConnectionActivity extends AppCompatActivity {
 
             @Override
             public void onBinaryReceived(byte[] data) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try{
-                            logs.setText("Mensagem binaria");
-                        } catch (Exception e){
-                            e.printStackTrace();
-                        }
-                    }
-                });
+
 
             }
 
             @Override
             public void onPingReceived(byte[] data) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try{
-                            logs.setText("Mensagem ping");
-                        } catch (Exception e){
-                            e.printStackTrace();
-                        }
-                    }
-                });
+
             }
 
             @Override
             public void onPongReceived(byte[] data) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try{
-                            logs.setText("Mensagem pong");
-                        } catch (Exception e){
-                            e.printStackTrace();
-                        }
-                    }
-                });
+
 
             }
 
@@ -120,10 +103,10 @@ public class ConnectionActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         try{
-                            logs.setText("Erro: "+e.toString());
+                            Toast.makeText(ConnectionActivity.this,e.toString(),Toast.LENGTH_SHORT).show();
                         } catch (Exception e){
                             e.printStackTrace();
-                            logs.setText("Erro: "+e.toString());
+                            Toast.makeText(ConnectionActivity.this,e.toString(),Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -139,21 +122,13 @@ public class ConnectionActivity extends AppCompatActivity {
                             logs.setText("Encerrado o fechamendo da ligacao");
                         } catch (Exception e){
                             e.printStackTrace();
+                            Toast.makeText(ConnectionActivity.this,e.toString(),Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
             }
             public void onCloseReceived() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try{
-                            logs.setText("Ligacao encerrada");
-                        } catch (Exception e){
-                            e.printStackTrace();
-                        }
-                    }
-                });
+
 
             }
         };

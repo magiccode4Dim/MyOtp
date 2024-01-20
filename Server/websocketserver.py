@@ -18,6 +18,8 @@ async def handler(websocket, path):
         print(f"Connection closed: {websocket.remote_address}")
 
 start_server = websockets.serve(handler, "0.0.0.0", 9001)
+print("websocketServer is Up")
 
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
+
