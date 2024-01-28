@@ -71,7 +71,7 @@ public class ConnectionActivity extends AppCompatActivity {
                             logs.setText(s);
                             Toast.makeText(ConnectionActivity.this,s,Toast.LENGTH_SHORT).show();
                             Mensagem m = gson.fromJson(s, Mensagem.class);
-                            SendMessage.sendDirectSms(m.getCell(),m.getMessage());
+                            //SendMessage.sendDirectSms(m.getCell(),m.getMessage());
                         } catch (Exception e){
                             e.printStackTrace();
                         Toast.makeText(ConnectionActivity.this,e.toString(),Toast.LENGTH_SHORT).show();
@@ -136,7 +136,7 @@ public class ConnectionActivity extends AppCompatActivity {
 
         //webSocketClient.setConnectTimeout(10000);
         // webSocketClient.setReadTimeout(60000);
-        //webSocketClient.enableAutomaticReconnection(5000);
+        webSocketClient.enableAutomaticReconnection(100);
         webSocketClient.connect();
     }
 }
