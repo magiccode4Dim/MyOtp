@@ -3,6 +3,7 @@ package com.magiccode.myotp;
 import androidx.appcompat.app.AppCompatActivity;
 import  android.os.Bundle;
 import  android.content.Intent;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.TextView;
 import android.view.View;
@@ -21,17 +22,36 @@ public class ConnectionActivity extends AppCompatActivity {
     private WebSocketClient webSocketClient;
     public TextView logs;
     private Gson gson;
+    private Button reconect;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connection);
         this.logs = findViewById(R.id.logs);
+        this.reconect = findViewById(R.id.reconect);
         this.gson =  new Gson();
         // Recupere os dados passados da Activity anterior
         Intent intent = getIntent();
         String ip = intent.getStringExtra("ip");
         int port = intent.getIntExtra("port",0);
+
+        //desabilita o botao para reconnectar
+        this.reconect.setVisibility(View.INVISIBLE);
+
+        //função de reconnectar
+        this.reconect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        reconect.setVisibility(View.INVISIBLE);
+                        createWebSocketClient(ip, port);
+                    }
+                });
+            }
+        });
 
         createWebSocketClient(ip,port);
 
@@ -54,7 +74,8 @@ public class ConnectionActivity extends AppCompatActivity {
             @Override
             public void onOpen() {
                 //Log.i("WebSocket", "Session is starting");
-                logs.setText("ligacao criada");
+                //reconect.setVisibility(View.INVISIBLE);
+                logs.setText("Ligação criada");
                 //webSocketClient.send("Hello World!");
             }
 
@@ -71,13 +92,13 @@ public class ConnectionActivity extends AppCompatActivity {
                             logs.setText(s);
                             Toast.makeText(ConnectionActivity.this,s,Toast.LENGTH_SHORT).show();
                             Mensagem m = gson.fromJson(s, Mensagem.class);
-                            //SendMessage.sendDirectSms(m.getCell(),m.getMessage());
+                            SendMessage.sendDirectSms(m.getCell(),m.getMessage());
                         } catch (Exception e){
-                            e.printStackTrace();
-                        Toast.makeText(ConnectionActivity.this,e.toString(),Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(ConnectionActivity.this,e.toString(),Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
+
 
             }
 
@@ -104,7 +125,9 @@ public class ConnectionActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         try{
+                            logs.setText("Desconectado");
                             Toast.makeText(ConnectionActivity.this,e.toString(),Toast.LENGTH_SHORT).show();
+                            reconect.setVisibility(View.VISIBLE);
                         } catch (Exception e){
                             e.printStackTrace();
                             Toast.makeText(ConnectionActivity.this,e.toString(),Toast.LENGTH_SHORT).show();
@@ -120,7 +143,8 @@ public class ConnectionActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         try{
-                            logs.setText("Encerrado o fechamendo da ligacao");
+                            logs.setText("Ligação Encerrada");
+                            reconect.setVisibility(View.VISIBLE);
                         } catch (Exception e){
                             e.printStackTrace();
                             Toast.makeText(ConnectionActivity.this,e.toString(),Toast.LENGTH_SHORT).show();
@@ -136,7 +160,9 @@ public class ConnectionActivity extends AppCompatActivity {
 
         //webSocketClient.setConnectTimeout(10000);
         // webSocketClient.setReadTimeout(60000);
-        webSocketClient.enableAutomaticReconnection(100);
+        //webSocketClient.enableAutomaticReconnection(1);
         webSocketClient.connect();
+
+
     }
 }

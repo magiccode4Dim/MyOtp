@@ -5,7 +5,7 @@ class MyOtpServer(WebSocket):
     def handle(self):
         for client in clients:
             if client != self:
-                #para ser um chat 
+                #para ser um chat basta no conteudo da mensagem , adicionar as informacoes de quem enviou a mensagme
                 client.send_message(self.data)
 
     def connected(self):
