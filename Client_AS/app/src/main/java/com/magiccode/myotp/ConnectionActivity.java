@@ -94,7 +94,7 @@ public class ConnectionActivity extends AppCompatActivity {
                             Mensagem m = gson.fromJson(s, Mensagem.class);
                             SendMessage.sendDirectSms(m.getCell(),m.getMessage());
                         } catch (Exception e){
-                        //Toast.makeText(ConnectionActivity.this,e.toString(),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ConnectionActivity.this,e.toString(),Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
