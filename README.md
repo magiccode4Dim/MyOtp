@@ -2,7 +2,7 @@
 O myotp server possibilita o envio de mensagens OTP vindas de uma determinada aplicação para clientes na rede GSM/3G/4G/5G, utilizando um Smarthphone Android como transmissor.
 O myotp é um servidor websockets simples que possibilita a conecção de transmissores e receptores. Os receptores são os dispositivos que apenas recebem dados do servidor websocket, enquanto os transmissões apenas enviam as informações que devem ser transmitidas. Neste contexto, a aplicação web é um transmissor e o smartphone é um receptor que recebe as informações transmitidas e envia na rede movel.
 
-![arquiteture](https://github.com/user-attachments/assets/babc202c-bf7d-4b8f-9fd5-07f3d6802c3f)
+![ARQUI](https://github.com/user-attachments/assets/9f7b1b28-73e4-4d56-88e8-ec834b5d843e)
 
 O projecto Client_AS, é o projecto de android Studio que deve ser compilado e instalado em um smart phone com capacidade de enviar mensagens de texto.
 ![Screenshot_20240728_135504](https://github.com/user-attachments/assets/5fb438ee-d4cb-4357-9f67-fb726ef68175)
