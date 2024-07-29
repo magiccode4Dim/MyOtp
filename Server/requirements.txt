@@ -1,0 +1,2 @@
+simple_websocket_server==0.4.4
+websockets==12.0
